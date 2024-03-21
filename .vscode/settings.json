@@ -1,0 +1,5 @@
+{
+    "terminal.integrated.accessibleViewFocusOnCommandExecution": true,
+    "terminal.integrated.accessibleViewPreserveCursorPosition": true,
+    "python.analysis.typeCheckingMode": "basic"
+}
