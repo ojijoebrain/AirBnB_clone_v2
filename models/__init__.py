@@ -10,10 +10,16 @@ from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
 from os import getenv
+from models.Envar import HBNB_TYPE_STORAGE, DB
 
 
-if getenv("HBNB_TYPE_STORAGE") == "db":
+if getenv("HBNB_TYPE_STORAGE") == DB:
     storage = DBStorage()
+else:
+    storage = FileStorage()
 
-storage = FileStorage()
+classes = {'User': User, 'BaseModel': BaseModel,
+           'Place': Place, 'State': State, 'City': City,
+           'Amenity': Amenity, 'Review': Review}
+
 storage.reload()
