@@ -11,10 +11,7 @@ from models.place import Place
 class City(BaseModel):
     """ The city class, contains state ID and name """
     __tablename__ = "cities"
-    if (getenv(HBNB_TYPE_STORAGE) == DB):
-        state_id = Column(String(60), ForeignKey('states.id'), nullable=False)
-        name = Column(String(128), nullable=False)
-        places = relationship("Place", cascade='all, delete, delete-orphan',
+    state_id = Column(String(60), ForeignKey('states.id'), nullable=False)
+    name = Column(String(128), nullable=False)
+    places = relationship("Place", cascade='all, delete, delete-orphan',
                               backref="cities")
-    state_id = ''
-    name = ''
