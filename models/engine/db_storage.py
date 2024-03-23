@@ -11,6 +11,7 @@ from models.state import State
 from models.place import Place
 from models.amenity import Amenity
 from models.review import Review
+from models import Envar as EV
 
 
 
@@ -31,7 +32,7 @@ class DBStorage:
                                       .format(user, pwd, host, db),
                                       pool_pre_ping=True)
 
-        if env == "test":
+        if env == EV.TEST:
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
@@ -39,21 +40,22 @@ class DBStorage:
         returns a dictionary
         """
         dic = {}
-        if cls:
-            if type(cls) is str:
-                cls = eval(cls)
-            query = self.__session.query(cls)
-            for i in query:
-                key = "{}.{}".format(type(i).__name__, i.id)
-                dic[key] = i
+        if cls != '':
+            objs = self.__session.query(models.classes[cls]).all()
+            for obj in objs:
+                key = f'{obj.__class__.__name__}.{obj.id}'
+                dic[key] = obj
+            return dic
         else:
-            lista = [State, City, User, Place, Review, Amenity]
-            for i in lista:
-                query = self.__session.query(i)
-                for j in query:
-                    key = "{}.{}".format(type(j).__name__, j.id)
-                    dic[key] = j
-        return (dic)
+            for k, v in models.classes.items():
+                if k != 'BaseModel':
+                    objs = self.__session.query(v).all()
+                    if len(objs):
+                        for obj in objs:
+                            key = f'{obj.__class__.__name__}.{obj.id}'
+                            dic[key] = obj
+            return dic
+
 
     def new(self, obj):
         """
@@ -73,12 +75,13 @@ class DBStorage:
         """
         if obj:
             self.session.delete(obj)
+        return
 
     def reload(self):
         """
         configures the db
         """
-        Base.metadata.create_all(self.__engine)
+        self.__session = Base.metadata.create_all(self.__engine)
         s = sessionmaker(bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(s)
         self.__session = Session()
