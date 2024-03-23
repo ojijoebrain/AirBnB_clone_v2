@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """ new database """
-from sqlalchemy import (create_engine)from os import getenv
+from sqlalchemy import create_engine, MetaData
+from os import getenv
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.ext.declarative import declarative_base
 from models.city import City
@@ -19,6 +20,7 @@ class DBStorage:
     __session = None
 
     def __init__(self):
+        """class initialization"""
         user = getenv("HBNB_MYSQL_USER")
         pwd = getenv("HBNB_MYSQL_PWD")
         db = getenv("HBNB_MYSQL_DB")
